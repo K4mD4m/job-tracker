@@ -1,3 +1,15 @@
+import Navbar from "@/components/Navbar";
+import Hero from "@/components/Hero";
+import FeaturesSection from "@/components/FeaturesSection";
+import Footer from "@/components/Footer";
+
 export default function Home() {
-  return <h1 className="text-red-500">HELLO WORDL!</h1>;
+  return (
+    <div>
+      <Navbar />
+      <Hero />
+      <FeaturesSection />
+      <Footer />
+    </div>
+  );
 }
