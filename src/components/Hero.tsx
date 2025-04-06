@@ -5,7 +5,6 @@ import Link from "next/link";
 export default function Hero() {
   return (
     <section className="relative h-[100vh] flex items-center justify-center text-center overflow-hidden">
-      {/* Tło */}
       <div className="absolute inset-0 z-0">
         <Image
           src="/images/herosection2.jpg"
@@ -17,7 +16,6 @@ export default function Hero() {
         <div className="absolute inset-0 bg-black opacity-70"></div>
       </div>
 
-      {/* Treść */}
       <div className="z-10 text-white px-4">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
           Track your job applications with ease
