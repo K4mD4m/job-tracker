@@ -17,10 +17,17 @@ export default function Login() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Sprawdzenie poprawności danych logowania
     if (email === "demo@jobtracker.com" && password === "demo123") {
-      setError("");
-      router.push("/dashboard"); // przekierowuje do dashboardu
+      setError(""); // Resetowanie błędu, jeśli dane są poprawne
+
+      // Zapisujemy użytkownika jako zalogowanego w localStorage
+      localStorage.setItem("isLoggedIn", "true");
+
+      // Przekierowanie do Dashboard
+      router.push("/dashboard");
     } else {
+      // W przypadku błędu logowania, ustawiamy komunikat
       setError("Invalid email or password.");
     }
   };
