@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
-import PrivateRoute from "@/components/PrivateRoute"; // Import PrivateRoute
+import PrivateRoute from "@/components/PrivateRoute";
+import AddJobApplication from "@/components/AddJobApplication";
 
 interface JobApplication {
   _id: string;
@@ -67,6 +68,7 @@ export default function Dashboard() {
             </Card>
           ))}
         </div>
+        <AddJobApplication />
       </main>
     </PrivateRoute>
   );
