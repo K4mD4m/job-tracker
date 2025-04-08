@@ -27,7 +27,22 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-export default function AddJobApplication() {
+interface JobApplication {
+  _id: string;
+  company: string;
+  position: string;
+  status: string;
+  dateApplied: string;
+  notes?: string;
+}
+
+interface AddJobApplicationProps {
+  onAddJobApplication: (newApp: JobApplication) => void;
+}
+
+export default function AddJobApplication({
+  onAddJobApplication,
+}: AddJobApplicationProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     register,
@@ -52,8 +67,10 @@ export default function AddJobApplication() {
       });
 
       if (res.ok) {
+        const newApp = await res.json(); // Pobierz nową aplikację z odpowiedzi serwera
         toast.success("Job application added successfully!");
-        reset(); // Reset forumlarza po udanym dodaniu aplikacji
+        reset(); // Reset formularza po dodaniu aplikacji
+        onAddJobApplication(newApp); // Przekaż nową aplikację do komponentu nadrzędnego
       } else {
         toast.error("Error adding job application.");
       }
@@ -71,6 +88,7 @@ export default function AddJobApplication() {
           Add a Job Application
         </h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* Form fields */}
           <div>
             <label className="block text-sm font-medium mb-1" htmlFor="company">
               Company
@@ -113,8 +131,8 @@ export default function AddJobApplication() {
               control={control}
               render={({ field }) => (
                 <Select
-                  value={field.value} // Zapewniamy, że wartość jest przekazywana
-                  onValueChange={(value) => field.onChange(value)} // Używamy onChange do aktualizacji wartości
+                  value={field.value}
+                  onValueChange={(value) => field.onChange(value)}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select status" />

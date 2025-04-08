@@ -43,6 +43,11 @@ export default function Dashboard() {
     fetchApplications();
   }, [router]);
 
+  // Funkcja do dodawania nowej aplikacji
+  const addJobApplication = (newApp: JobApplication) => {
+    setApplications((prevApplications) => [newApp, ...prevApplications]);
+  };
+
   return (
     <PrivateRoute>
       <main className="min-h-screen bg-gray-100 py-10 px-4 md:px-10">
@@ -68,7 +73,7 @@ export default function Dashboard() {
             </Card>
           ))}
         </div>
-        <AddJobApplication />
+        <AddJobApplication onAddJobApplication={addJobApplication} />
       </main>
     </PrivateRoute>
   );
