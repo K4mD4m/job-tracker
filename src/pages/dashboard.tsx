@@ -7,6 +7,7 @@ import PrivateRoute from "@/components/PrivateRoute";
 import AddJobApplication from "@/components/AddJobApplication";
 import JobApplicationCard from "@/components/JobApplicationCard";
 import EditJobApplicationModal from "@/components/EditJobApplicationModal";
+import SearchFilterBar from "@/components/SearchFilterBar";
 
 interface JobApplication {
   _id: string;
@@ -25,6 +26,8 @@ export default function Dashboard() {
   const [applications, setApplications] = useState<JobApplication[]>([]);
   const [selectedApp, setSelectedApp] = useState<JobApplication | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   const router = useRouter();
 
   useEffect(() => {
@@ -55,7 +58,6 @@ export default function Dashboard() {
   };
 
   const editJobApplication = async (updatedApp: JobApplication) => {
-    // Wyślij zaktualizowane dane do serwera
     try {
       const res = await fetch(`/api/job-applications/${updatedApp._id}`, {
         method: "PATCH",
@@ -83,14 +85,34 @@ export default function Dashboard() {
     setIsModalOpen(true);
   };
 
+  // Logika filtrowania aplikacji
+  const filteredApplications = applications.filter((app) => {
+    const matchesSearch =
+      app.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      app.position.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = statusFilter === "all" || app.status === statusFilter; // Jeśli "all" to brak filtra
+
+    return matchesSearch && matchesStatus;
+  });
+
   return (
     <PrivateRoute>
       <main className="min-h-screen bg-gray-100 py-10 px-4 md:px-10">
         <h1 className="text-3xl md:text-4xl font-bold mb-6 text-center">
           Your Applications
         </h1>
+
+        {/* Pasek wyszukiwania i filtracji */}
+        <SearchFilterBar
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          statusFilter={statusFilter}
+          onStatusChange={setStatusFilter}
+        />
+
+        {/* Wyświetlanie aplikacji po filtrze */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {applications.map((app) => (
+          {filteredApplications.map((app) => (
             <JobApplicationCard
               key={app._id}
               application={app}
@@ -99,6 +121,7 @@ export default function Dashboard() {
             />
           ))}
         </div>
+
         <AddJobApplication onAddJobApplication={addJobApplication} />
       </main>
 

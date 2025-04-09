@@ -1,0 +1,52 @@
+"use client";
+
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+interface Props {
+  searchQuery: string;
+  onSearchChange: (value: string) => void;
+  statusFilter: string;
+  onStatusChange: (value: string) => void;
+}
+
+export default function SearchFilterBar({
+  searchQuery,
+  onSearchChange,
+  statusFilter,
+  onStatusChange,
+}: Props) {
+  return (
+    <div className="mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
+      {/* Pasek wyszukiwania */}
+      <Input
+        type="text"
+        placeholder="Search by company or position..."
+        value={searchQuery}
+        onChange={(e) => onSearchChange(e.target.value)}
+        className="w-full md:w-1/2"
+      />
+
+      {/* Select do filtrowania po statusie */}
+      <Select value={statusFilter} onValueChange={onStatusChange}>
+        <SelectTrigger className="w-full md:w-52">
+          {/* Jeśli statusFilter jest pusty, pokażemy 'Filter by status' */}
+          <SelectValue>{statusFilter || "Filter by status"}</SelectValue>
+        </SelectTrigger>
+        <SelectContent>
+          {/* Opcja 'All' - traktowana jako brak filtra */}
+          <SelectItem value="all">All</SelectItem>
+          <SelectItem value="applied">Applied</SelectItem>
+          <SelectItem value="interview">Interview</SelectItem>
+          <SelectItem value="rejected">Rejected</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
