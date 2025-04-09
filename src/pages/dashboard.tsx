@@ -7,7 +7,7 @@ import PrivateRoute from "@/components/PrivateRoute";
 import AddJobApplication from "@/components/AddJobApplication";
 import JobApplicationCard from "@/components/JobApplicationCard";
 import EditJobApplicationModal from "@/components/EditJobApplicationModal";
-import SearchFilterBar from "@/components/SearchFilterBar";
+import Pagination from "@/components/Pagination";
 
 interface JobApplication {
   _id: string;
@@ -26,8 +26,8 @@ export default function Dashboard() {
   const [applications, setApplications] = useState<JobApplication[]>([]);
   const [selectedApp, setSelectedApp] = useState<JobApplication | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(6); // Ilość aplikacji na stronę
   const router = useRouter();
 
   useEffect(() => {
@@ -85,15 +85,15 @@ export default function Dashboard() {
     setIsModalOpen(true);
   };
 
-  // Logika filtrowania aplikacji
-  const filteredApplications = applications.filter((app) => {
-    const matchesSearch =
-      app.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      app.position.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === "all" || app.status === statusFilter; // Jeśli "all" to brak filtra
+  // zmiana strony
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
-    return matchesSearch && matchesStatus;
-  });
+  // Obliczanie indeksu początkowego i końcowego
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const currentApplications = applications.slice(startIndex, endIndex);
 
   return (
     <PrivateRoute>
@@ -101,18 +101,8 @@ export default function Dashboard() {
         <h1 className="text-3xl md:text-4xl font-bold mb-6 text-center">
           Your Applications
         </h1>
-
-        {/* Pasek wyszukiwania i filtracji */}
-        <SearchFilterBar
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          statusFilter={statusFilter}
-          onStatusChange={setStatusFilter}
-        />
-
-        {/* Wyświetlanie aplikacji po filtrze */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredApplications.map((app) => (
+          {currentApplications.map((app) => (
             <JobApplicationCard
               key={app._id}
               application={app}
@@ -121,6 +111,13 @@ export default function Dashboard() {
             />
           ))}
         </div>
+
+        <Pagination
+          currentPage={currentPage}
+          pageSize={pageSize}
+          totalItems={applications.length}
+          onPageChange={handlePageChange}
+        />
 
         <AddJobApplication onAddJobApplication={addJobApplication} />
       </main>
