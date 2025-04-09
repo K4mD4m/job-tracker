@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import PrivateRoute from "@/components/PrivateRoute";
 import AddJobApplication from "@/components/AddJobApplication";
+import JobApplicationCard from "@/components/JobApplicationCard";
+import EditJobApplicationModal from "@/components/EditJobApplicationModal";
 
 interface JobApplication {
   _id: string;
@@ -22,11 +23,13 @@ const isLoggedIn = () =>
 
 export default function Dashboard() {
   const [applications, setApplications] = useState<JobApplication[]>([]);
+  const [selectedApp, setSelectedApp] = useState<JobApplication | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     if (!isLoggedIn()) {
-      router.push("/login"); // Jeśli użytkownik nie jest zalogowany, przekieruj na login
+      router.push("/login");
       return;
     }
 
@@ -43,9 +46,41 @@ export default function Dashboard() {
     fetchApplications();
   }, [router]);
 
-  // Funkcja do dodawania nowej aplikacji
   const addJobApplication = (newApp: JobApplication) => {
-    setApplications((prevApplications) => [newApp, ...prevApplications]);
+    setApplications((prev) => [newApp, ...prev]);
+  };
+
+  const deleteJobApplication = (id: string) => {
+    setApplications((prev) => prev.filter((app) => app._id !== id));
+  };
+
+  const editJobApplication = async (updatedApp: JobApplication) => {
+    // Wyślij zaktualizowane dane do serwera
+    try {
+      const res = await fetch(`/api/job-applications/${updatedApp._id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedApp),
+      });
+
+      if (res.ok) {
+        setApplications((prev) =>
+          prev.map((app) => (app._id === updatedApp._id ? updatedApp : app))
+        );
+        toast.success("Application updated successfully!");
+      } else {
+        toast.error("Failed to update application.");
+      }
+    } catch (error) {
+      toast.error("An error occurred while updating.");
+    }
+  };
+
+  const handleEdit = (application: JobApplication) => {
+    setSelectedApp(application);
+    setIsModalOpen(true);
   };
 
   return (
@@ -56,25 +91,26 @@ export default function Dashboard() {
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {applications.map((app) => (
-            <Card key={app._id} className="bg-white shadow rounded-2xl">
-              <CardContent className="p-6 space-y-3">
-                <div className="text-xl font-semibold">{app.position}</div>
-                <div className="text-gray-600">{app.company}</div>
-                <div className="text-sm text-muted-foreground">
-                  Status: <span className="font-medium">{app.status}</span>
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  Applied: {new Date(app.dateApplied).toLocaleDateString()}
-                </div>
-                {app.notes && (
-                  <div className="text-sm text-gray-700">Note: {app.notes}</div>
-                )}
-              </CardContent>
-            </Card>
+            <JobApplicationCard
+              key={app._id}
+              application={app}
+              onDelete={deleteJobApplication}
+              onEdit={handleEdit}
+            />
           ))}
         </div>
         <AddJobApplication onAddJobApplication={addJobApplication} />
       </main>
+
+      {/* Modal */}
+      {selectedApp && (
+        <EditJobApplicationModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSave={editJobApplication}
+          application={selectedApp}
+        />
+      )}
     </PrivateRoute>
   );
 }
