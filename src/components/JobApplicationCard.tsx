@@ -51,9 +51,13 @@ export default function JobApplicationCard({
     <Card className="bg-white shadow rounded-2xl relative">
       <CardContent className="p-6 space-y-3">
         <div className="flex justify-between items-start">
-          <div>
-            <div className="text-xl font-semibold">{application.position}</div>
-            <div className="text-gray-600">{application.company}</div>
+          <div className="w-full max-w-full">
+            <div className="text-xl font-semibold break-words whitespace-normal overflow-wrap break-word word-break-all">
+              {application.position}
+            </div>
+            <div className="text-gray-600 break-words whitespace-normal overflow-wrap break-word word-break-all">
+              {application.company}
+            </div>
             <div className="text-sm text-muted-foreground">
               Status: <span className="font-medium">{application.status}</span>
             </div>
@@ -61,7 +65,7 @@ export default function JobApplicationCard({
               Applied: {new Date(application.dateApplied).toLocaleDateString()}
             </div>
             {application.notes && (
-              <div className="text-sm text-gray-700">
+              <div className="text-sm text-gray-700 break-words word-break-all whitespace-pre-wrap max-h-32 overflow-y-auto">
                 Note: {application.notes}
               </div>
             )}
@@ -72,6 +76,7 @@ export default function JobApplicationCard({
               size="icon"
               onClick={() => onEdit(application)}
               title="Edit"
+              className="cursor-pointer"
             >
               <Pencil size={16} />
             </Button>
@@ -80,6 +85,7 @@ export default function JobApplicationCard({
               size="icon"
               onClick={handleDelete}
               title="Delete"
+              className="cursor-pointer"
             >
               <Trash2 size={16} />
             </Button>

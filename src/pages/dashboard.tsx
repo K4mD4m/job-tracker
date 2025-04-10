@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 import PrivateRoute from "@/components/PrivateRoute";
 import AddJobApplication from "@/components/AddJobApplication";
 import JobApplicationCard from "@/components/JobApplicationCard";
 import EditJobApplicationModal from "@/components/EditJobApplicationModal";
+import SearchFilterBar from "@/components/SearchFilterBar";
 import Pagination from "@/components/Pagination";
 
 interface JobApplication {
@@ -26,8 +28,12 @@ export default function Dashboard() {
   const [applications, setApplications] = useState<JobApplication[]>([]);
   const [selectedApp, setSelectedApp] = useState<JobApplication | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(6); // Ilość aplikacji na stronę
+  const [pageSize] = useState(6);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAddFormVisible, setIsAddFormVisible] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -37,12 +43,15 @@ export default function Dashboard() {
     }
 
     const fetchApplications = async () => {
+      setIsLoading(true);
       try {
         const res = await fetch("/api/job-applications");
         const data = await res.json();
         setApplications(data);
       } catch (err) {
         toast.error("Failed to fetch job applications");
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -85,15 +94,28 @@ export default function Dashboard() {
     setIsModalOpen(true);
   };
 
-  // zmiana strony
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
-  // Obliczanie indeksu początkowego i końcowego
+  // Logika filtrowania aplikacji
+  const filteredApplications = applications.filter((app) => {
+    const matchesSearch =
+      app.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      app.position.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = statusFilter === "all" || app.status === statusFilter; // Jeśli "all" to brak filtra
+
+    return matchesSearch && matchesStatus;
+  });
+
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
-  const currentApplications = applications.slice(startIndex, endIndex);
+  const currentApplications = filteredApplications.slice(startIndex, endIndex);
+
+  // Funkcja do zmiany widoczności formularza
+  const toggleFormVisibility = () => {
+    setIsAddFormVisible((prev) => !prev);
+  };
 
   return (
     <PrivateRoute>
@@ -101,28 +123,61 @@ export default function Dashboard() {
         <h1 className="text-3xl md:text-4xl font-bold mb-6 text-center">
           Your Applications
         </h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {currentApplications.map((app) => (
-            <JobApplicationCard
-              key={app._id}
-              application={app}
-              onDelete={deleteJobApplication}
-              onEdit={handleEdit}
-            />
-          ))}
+
+        {/* Przycisk do wyświetlania formularza */}
+        <div className="text-center">
+          <button
+            onClick={toggleFormVisibility}
+            className="mb-6 px-4 py-2 bg-black text-white rounded-md cursor-pointer"
+          >
+            {isAddFormVisible ? "Close Form" : "Add New Application"}
+          </button>
         </div>
 
-        <Pagination
-          currentPage={currentPage}
-          pageSize={pageSize}
-          totalItems={applications.length}
-          onPageChange={handlePageChange}
-        />
+        {/* Wyświetlanie formularza, jeśli isAddFormVisible jest true */}
+        {isAddFormVisible && (
+          <AddJobApplication
+            onAddJobApplication={addJobApplication}
+            closeForm={() => setIsAddFormVisible(false)} // Funkcja do zamykania formularza
+          />
+        )}
 
-        <AddJobApplication onAddJobApplication={addJobApplication} />
+        <div className="mb-6">
+          <SearchFilterBar
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            statusFilter={statusFilter}
+            onStatusChange={setStatusFilter}
+          />
+        </div>
+
+        {isLoading ? (
+          <div className="flex justify-center items-center h-40">
+            <Loader2 className="h-10 w-10 text-black animate-spin" />
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {currentApplications.map((app) => (
+                <JobApplicationCard
+                  key={app._id}
+                  application={app}
+                  onDelete={deleteJobApplication}
+                  onEdit={handleEdit}
+                />
+              ))}
+            </div>
+
+            <Pagination
+              currentPage={currentPage}
+              pageSize={pageSize}
+              totalItems={applications.length}
+              onPageChange={handlePageChange}
+            />
+          </>
+        )}
       </main>
 
-      {/* Modal */}
       {selectedApp && (
         <EditJobApplicationModal
           isOpen={isModalOpen}

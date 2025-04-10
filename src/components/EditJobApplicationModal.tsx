@@ -1,6 +1,7 @@
 "use client";
 
 import { FC, useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -80,92 +81,122 @@ const EditJobApplicationModal: FC<EditJobApplicationModalProps> = ({
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Edit Job Application</h2>
-          <button onClick={onClose} className="text-gray-600 text-xl">
-            ×
-          </button>
-        </div>
-        <div className="space-y-4">
-          <div>
-            <label htmlFor="position" className="block text-sm font-medium">
-              Position
-            </label>
-            <Input
-              type="text"
-              id="position"
-              name="position"
-              value={formData.position}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label htmlFor="company" className="block text-sm font-medium">
-              Company
-            </label>
-            <Input
-              type="text"
-              id="company"
-              name="company"
-              value={formData.company}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label htmlFor="status" className="block text-sm font-medium">
-              Status
-            </label>
-            <Select value={formData.status} onValueChange={handleStatusChange}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="applied">applied</SelectItem>
-                <SelectItem value="interview">interview</SelectItem>
-                <SelectItem value="rejected">rejected</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <label htmlFor="dateApplied" className="block text-sm font-medium">
-              Date Applied
-            </label>
-            <Input
-              type="date"
-              id="dateApplied"
-              name="dateApplied"
-              value={formData.dateApplied}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label htmlFor="notes" className="block text-sm font-medium">
-              Notes
-            </label>
-            <Input
-              type="text"
-              id="notes"
-              name="notes"
-              value={formData.notes || ""}
-              onChange={handleChange}
-            />
-          </div>
-        </div>
-        <div className="mt-4 flex justify-end gap-4">
-          <Button variant="outline" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button variant="destructive" onClick={handleSave}>
-            Save Changes
-          </Button>
-        </div>
-      </div>
-    </div>
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md"
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold">Edit Job Application</h2>
+              <button
+                onClick={onClose}
+                className="text-gray-600 text-2xl cursor-pointer"
+              >
+                ×
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="position" className="block text-sm font-medium">
+                  Position
+                </label>
+                <Input
+                  type="text"
+                  id="position"
+                  name="position"
+                  value={formData.position}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label htmlFor="company" className="block text-sm font-medium">
+                  Company
+                </label>
+                <Input
+                  type="text"
+                  id="company"
+                  name="company"
+                  value={formData.company}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label htmlFor="status" className="block text-sm font-medium">
+                  Status
+                </label>
+                <Select
+                  value={formData.status}
+                  onValueChange={handleStatusChange}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="applied">applied</SelectItem>
+                    <SelectItem value="interview">interview</SelectItem>
+                    <SelectItem value="rejected">rejected</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label
+                  htmlFor="dateApplied"
+                  className="block text-sm font-medium"
+                >
+                  Date Applied
+                </label>
+                <Input
+                  type="date"
+                  id="dateApplied"
+                  name="dateApplied"
+                  value={formData.dateApplied}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label htmlFor="notes" className="block text-sm font-medium">
+                  Notes
+                </label>
+                <Input
+                  type="text"
+                  id="notes"
+                  name="notes"
+                  value={formData.notes || ""}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+            <div className="mt-4 flex justify-end gap-4">
+              <Button
+                variant="outline"
+                onClick={onClose}
+                className="cursor-pointer"
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={handleSave}
+                className="cursor-pointer"
+              >
+                Save Changes
+              </Button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 
