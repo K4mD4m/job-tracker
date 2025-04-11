@@ -64,8 +64,8 @@ npm run dev
 
 Use the demo account to try out the app:
 
-**Email**: demo@demo.com
-**Password**: demopass123
+**Email**: demo@jobtracker.com
+**Password**: demo123
 
 > Note: This is a frontend-only demo using mock authentication via context.
 
