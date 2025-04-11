@@ -35,16 +35,24 @@ export default function SearchFilterBar({
 
       {/* Select do filtrowania po statusie */}
       <Select value={statusFilter} onValueChange={onStatusChange}>
-        <SelectTrigger className="w-full md:w-52">
+        <SelectTrigger className="w-full md:w-52 cursor-pointer">
           {/* Jeśli statusFilter jest pusty, pokażemy 'Filter by status' */}
           <SelectValue>{statusFilter || "Filter by status"}</SelectValue>
         </SelectTrigger>
         <SelectContent>
           {/* Opcja 'All' - traktowana jako brak filtra */}
-          <SelectItem value="all">All</SelectItem>
-          <SelectItem value="applied">Applied</SelectItem>
-          <SelectItem value="interview">Interview</SelectItem>
-          <SelectItem value="rejected">Rejected</SelectItem>
+          <SelectItem value="all" className="cursor-pointer">
+            All
+          </SelectItem>
+          <SelectItem value="applied" className="cursor-pointer">
+            Applied
+          </SelectItem>
+          <SelectItem value="interview" className="cursor-pointer">
+            Interview
+          </SelectItem>
+          <SelectItem value="rejected" className="cursor-pointer">
+            Rejected
+          </SelectItem>
         </SelectContent>
       </Select>
     </div>

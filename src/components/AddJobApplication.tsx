@@ -104,7 +104,7 @@ export default function AddJobApplication({
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 bg-gray-300 bg-opacity-50 flex items-center justify-center z-50"
+        className="fixed inset-0 bg-black/90 flex items-center justify-center z-50"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -192,13 +192,19 @@ export default function AddJobApplication({
                     value={field.value}
                     onValueChange={(value) => field.onChange(value)}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="cursor-pointer">
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="applied">Applied</SelectItem>
-                      <SelectItem value="interview">Interview</SelectItem>
-                      <SelectItem value="rejected">Rejected</SelectItem>
+                      <SelectItem value="applied" className="cursor-pointer">
+                        Applied
+                      </SelectItem>
+                      <SelectItem value="interview" className="cursor-pointer">
+                        Interview
+                      </SelectItem>
+                      <SelectItem value="rejected" className="cursor-pointer">
+                        Rejected
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 )}

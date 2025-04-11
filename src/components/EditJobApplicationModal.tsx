@@ -85,7 +85,7 @@ const EditJobApplicationModal: FC<EditJobApplicationModalProps> = ({
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -139,13 +139,19 @@ const EditJobApplicationModal: FC<EditJobApplicationModalProps> = ({
                   value={formData.status}
                   onValueChange={handleStatusChange}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="cursor-pointer">
                     <SelectValue placeholder="Select status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="applied">applied</SelectItem>
-                    <SelectItem value="interview">interview</SelectItem>
-                    <SelectItem value="rejected">rejected</SelectItem>
+                    <SelectItem value="applied" className="cursor-pointer">
+                      applied
+                    </SelectItem>
+                    <SelectItem value="interview" className="cursor-pointer">
+                      interview
+                    </SelectItem>
+                    <SelectItem value="rejected" className="cursor-pointer">
+                      rejected
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
