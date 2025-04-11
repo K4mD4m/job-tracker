@@ -88,6 +88,7 @@ export default function AddJobApplication({
       }
     } catch (error) {
       toast.error("An error occurred. Please try again.");
+      console.error("Error:", error);
     } finally {
       setIsSubmitting(false);
     }

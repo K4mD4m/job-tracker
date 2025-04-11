@@ -45,6 +45,7 @@ export default function JobApplicationCard({
       }
     } catch (error) {
       toast.error("An error occurred while deleting.");
+      console.error("Error:", error);
     }
   };
 

@@ -44,6 +44,7 @@ export default function Dashboard() {
         setApplications(data);
       } catch (error) {
         toast.error("Failed to fetch job applications");
+        console.error("Error:", error);
       } finally {
         setIsLoading(false);
       }
@@ -87,6 +88,7 @@ export default function Dashboard() {
       }
     } catch (error) {
       toast.error("An error occurred while updating.");
+      console.error("Error:", error);
     }
   };
 

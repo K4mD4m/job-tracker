@@ -78,6 +78,7 @@ const EditJobApplicationModal: FC<EditJobApplicationModalProps> = ({
         }
       } catch (error) {
         toast.error("An error occurred while updating.");
+        console.error("Error:", error);
       }
     } else {
       toast.error("Please fill all the fields!");
