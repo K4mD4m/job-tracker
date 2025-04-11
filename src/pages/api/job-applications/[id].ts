@@ -2,10 +2,13 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { connectToDatabase } from "../../../lib/mongoose";
 import JobApplication from "../../../models/JobApplication";
 
+// This API route handles DELETE and PATCH requests for job applications
+// It connects to the database, finds the job application by ID, and either deletes or updates it
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await connectToDatabase();
   const { id } = req.query;
 
+  // Check if the ID is valid
   if (req.method === "DELETE") {
     try {
       const deleted = await JobApplication.findByIdAndDelete(id);

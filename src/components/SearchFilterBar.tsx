@@ -24,7 +24,7 @@ export default function SearchFilterBar({
 }: Props) {
   return (
     <div className="mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
-      {/* Pasek wyszukiwania */}
+      {/* Search */}
       <Input
         type="text"
         placeholder="Search by company or position..."
@@ -33,14 +33,14 @@ export default function SearchFilterBar({
         className="w-full md:w-1/2"
       />
 
-      {/* Select do filtrowania po statusie */}
+      {/* Select */}
       <Select value={statusFilter} onValueChange={onStatusChange}>
         <SelectTrigger className="w-full md:w-52 cursor-pointer">
-          {/* Jeśli statusFilter jest pusty, pokażemy 'Filter by status' */}
+          {/* If statusFilter empty- show 'Filter by status' */}
           <SelectValue>{statusFilter || "Filter by status"}</SelectValue>
         </SelectTrigger>
         <SelectContent>
-          {/* Opcja 'All' - traktowana jako brak filtra */}
+          {/* 'All' - no filter */}
           <SelectItem value="all" className="cursor-pointer">
             All
           </SelectItem>

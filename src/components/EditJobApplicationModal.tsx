@@ -29,6 +29,7 @@ interface EditJobApplicationModalProps {
   application: JobApplication;
 }
 
+// Component to edit job application details
 const EditJobApplicationModal: FC<EditJobApplicationModalProps> = ({
   isOpen,
   onClose,
@@ -48,6 +49,7 @@ const EditJobApplicationModal: FC<EditJobApplicationModalProps> = ({
     });
   };
 
+  // Handle status change for the select input
   const handleStatusChange = (value: string) => {
     setFormData({
       ...formData,
@@ -55,6 +57,7 @@ const EditJobApplicationModal: FC<EditJobApplicationModalProps> = ({
     });
   };
 
+  // Handle save button click
   const handleSave = async () => {
     if (formData.position && formData.company && formData.status) {
       try {

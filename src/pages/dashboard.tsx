@@ -22,18 +22,19 @@ interface JobApplication {
 }
 
 export default function Dashboard() {
-  const [applications, setApplications] = useState<JobApplication[]>([]);
-  const [selectedApp, setSelectedApp] = useState<JobApplication | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(6);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAddFormVisible, setIsAddFormVisible] = useState(false);
+  const [applications, setApplications] = useState<JobApplication[]>([]); // State to hold job applications
+  const [selectedApp, setSelectedApp] = useState<JobApplication | null>(null); // State to hold the selected job application for editing
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to control the modal visibility
+  const [searchQuery, setSearchQuery] = useState<string>(""); // State for search query
+  const [statusFilter, setStatusFilter] = useState<string>("all"); // State for status filter
+  const [currentPage, setCurrentPage] = useState(1); // State for current page in pagination
+  const [pageSize] = useState(6); // State for page size in pagination
+  const [isLoading, setIsLoading] = useState(true); // State to control loading state
+  const [isAddFormVisible, setIsAddFormVisible] = useState(false); // State to control the visibility of the add job application form
 
-  const MAX_APPLICATIONS = 30;
+  const MAX_APPLICATIONS = 30; // Maximum number of job applications allowed
 
+  // Fetch job applications from the API when the component mounts
   useEffect(() => {
     const fetchApplications = async () => {
       setIsLoading(true);
@@ -51,6 +52,7 @@ export default function Dashboard() {
     fetchApplications();
   }, []);
 
+  // Function to add a new job application
   const addJobApplication = (newApp: JobApplication) => {
     if (applications.length >= MAX_APPLICATIONS) {
       toast.error("Limit reached: max 30 applications.");
@@ -59,10 +61,12 @@ export default function Dashboard() {
     setApplications((prev) => [newApp, ...prev]);
   };
 
+  // Function to delete a job application
   const deleteJobApplication = (id: string) => {
     setApplications((prev) => prev.filter((app) => app._id !== id));
   };
 
+  // Function to edit a job application
   const editJobApplication = async (updatedApp: JobApplication) => {
     try {
       const res = await fetch(`/api/job-applications/${updatedApp._id}`, {
@@ -86,15 +90,18 @@ export default function Dashboard() {
     }
   };
 
+  // Function to handle editing a job application
   const handleEdit = (application: JobApplication) => {
     setSelectedApp(application);
     setIsModalOpen(true);
   };
 
+  // Function to handle page change in pagination
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
+  // Filter applications based on search query and status filter
   const filteredApplications = applications.filter((app) => {
     const matchesSearch =
       app.company.toLowerCase().includes(searchQuery.toLowerCase()) ||

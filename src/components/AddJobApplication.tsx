@@ -16,6 +16,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { useState } from "react";
 
+// Zod schema for form validation
 const schema = z.object({
   company: z.string().min(1, "Company is required"),
   position: z.string().min(1, "Position is required"),
@@ -28,6 +29,7 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
+// Define the interface for the job application object
 interface JobApplication {
   _id: string;
   company: string;
@@ -37,11 +39,13 @@ interface JobApplication {
   notes?: string;
 }
 
+// Define the props for the AddJobApplication component
 interface AddJobApplicationProps {
   onAddJobApplication: (newApp: JobApplication) => void;
   closeForm: () => void;
 }
 
+// AddJobApplication component
 export default function AddJobApplication({
   onAddJobApplication,
   closeForm,
@@ -59,6 +63,7 @@ export default function AddJobApplication({
     resolver: zodResolver(schema),
   });
 
+  // Function to handle form submission
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
 
@@ -71,12 +76,13 @@ export default function AddJobApplication({
         body: JSON.stringify(data),
       });
 
+      // Check if the response is ok
       if (res.ok) {
-        const newApp = await res.json(); // Pobierz nową aplikację z odpowiedzi serwera
+        const newApp = await res.json();
         toast.success("Job application added successfully!");
-        reset(); // Reset formularza po dodaniu aplikacji
-        onAddJobApplication(newApp); // Przekaż nową aplikację do komponentu nadrzędnego
-        closeForm(); // Zamknij formularz
+        reset();
+        onAddJobApplication(newApp);
+        closeForm();
       } else {
         toast.error("Error adding job application.");
       }
@@ -87,6 +93,7 @@ export default function AddJobApplication({
     }
   };
 
+  // Function to handle character count for the company input
   const handleCompanyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (value.length <= 150) {
@@ -94,6 +101,7 @@ export default function AddJobApplication({
     }
   };
 
+  // Function to handle character count for the position input
   const handlePositionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (value.length <= 75) {

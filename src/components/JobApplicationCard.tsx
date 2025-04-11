@@ -20,6 +20,7 @@ interface JobApplication {
   notes?: string;
 }
 
+// Component to display a job application card with edit and delete functionality
 export default function JobApplicationCard({
   application,
   onDelete,

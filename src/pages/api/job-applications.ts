@@ -2,13 +2,13 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { connectToDatabase } from "../../lib/mongoose";
 import JobApplication from "../../models/JobApplication";
 
-// API do GET i POST
+// This API route handles GET and POST requests for job applications
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await connectToDatabase(); 
 
   if (req.method === "GET") {
     try {
-      const applications = await JobApplication.find(); // Pobiera wszystkie aplikacje
+      const applications = await JobApplication.find(); // fetch all job applications from the database
       res.status(200).json(applications);
     } catch (error) {
       res.status(500).json({ message: "Error fetching job applications", error });
@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       const { company, position, status, dateApplied, notes } = req.body;
       const newApplication = new JobApplication({ company, position, status, dateApplied, notes });
-      await newApplication.save(); // Zapis do bazy
+      await newApplication.save();
       res.status(201).json(newApplication);
     } catch (error) {
       res.status(500).json({ message: "Error creating job application", error });

@@ -7,6 +7,7 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
+// Pagination component to handle page navigation
 export default function Pagination({
   currentPage,
   pageSize,

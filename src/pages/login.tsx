@@ -18,10 +18,12 @@ export default function Login() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
+    // Simulate an API call for login
     setTimeout(() => {
       if (email === "demo@jobtracker.com" && password === "demo123") {
         setError("");

@@ -9,6 +9,7 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isLoggedIn, logout } = useAuth();
 
+  // Function to handle logout
   const handleLogout = () => {
     logout();
     toast.success("You have successfully logged out!");
