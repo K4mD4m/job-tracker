@@ -1,17 +1,25 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import { useAuth } from "@/context/AuthContext";
+import { Loader2 } from "lucide-react";
 
-// PrivateRoute zabezpiecza dostęp do stron, tylko dla zalogowanych użytkowników
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isLoggedIn } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem("isLoggedIn");
-
     if (!isLoggedIn) {
-      router.push("/login"); // Jeśli użytkownik nie jest zalogowany, przekieruj na login
+      router.push("/login");
     }
-  }, [router]);
+  }, [isLoggedIn, router]);
+
+  if (!isLoggedIn) {
+    return (
+      <div className="flex justify-center items-center h-40 mt-24">
+        <Loader2 className="h-10 w-10 text-black animate-spin" />
+      </div>
+    );
+  }
 
   return <>{children}</>;
 };

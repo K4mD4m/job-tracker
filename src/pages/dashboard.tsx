@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import PrivateRoute from "@/components/PrivateRoute";
@@ -22,10 +21,6 @@ interface JobApplication {
   notes?: string;
 }
 
-const isLoggedIn = () =>
-  typeof window !== "undefined" &&
-  localStorage.getItem("isLoggedIn") === "true";
-
 export default function Dashboard() {
   const [applications, setApplications] = useState<JobApplication[]>([]);
   const [selectedApp, setSelectedApp] = useState<JobApplication | null>(null);
@@ -36,21 +31,17 @@ export default function Dashboard() {
   const [pageSize] = useState(6);
   const [isLoading, setIsLoading] = useState(true);
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
-  const router = useRouter();
+
+  const MAX_APPLICATIONS = 30;
 
   useEffect(() => {
-    if (!isLoggedIn()) {
-      router.push("/login");
-      return;
-    }
-
     const fetchApplications = async () => {
       setIsLoading(true);
       try {
         const res = await fetch("/api/job-applications");
         const data = await res.json();
         setApplications(data);
-      } catch (err) {
+      } catch (error) {
         toast.error("Failed to fetch job applications");
       } finally {
         setIsLoading(false);
@@ -58,9 +49,7 @@ export default function Dashboard() {
     };
 
     fetchApplications();
-  }, [router]);
-
-  const MAX_APPLICATIONS = 30;
+  }, []);
 
   const addJobApplication = (newApp: JobApplication) => {
     if (applications.length >= MAX_APPLICATIONS) {
@@ -106,12 +95,11 @@ export default function Dashboard() {
     setCurrentPage(page);
   };
 
-  // Logika filtrowania aplikacji
   const filteredApplications = applications.filter((app) => {
     const matchesSearch =
       app.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
       app.position.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === "all" || app.status === statusFilter; // Jeśli "all" to brak filtra
+    const matchesStatus = statusFilter === "all" || app.status === statusFilter;
 
     return matchesSearch && matchesStatus;
   });
@@ -120,7 +108,6 @@ export default function Dashboard() {
   const endIndex = startIndex + pageSize;
   const currentApplications = filteredApplications.slice(startIndex, endIndex);
 
-  // Funkcja do zmiany widoczności formularza
   const toggleFormVisibility = () => {
     setIsAddFormVisible((prev) => !prev);
   };
@@ -130,26 +117,24 @@ export default function Dashboard() {
       <Navbar />
       <main className="min-h-screen bg-gray-100 py-10 px-4 md:px-10">
         <h1 className="text-3xl md:text-4xl font-bold mb-6 text-center">
-          Your Applications
+          Welcome to your Dashboard!
         </h1>
 
-        {/* Przycisk do wyświetlania formularza */}
         {applications.length < MAX_APPLICATIONS && (
           <div className="text-center">
             <button
               onClick={toggleFormVisibility}
-              className="mb-6 px-4 py-2 bg-black text-white rounded-md cursor-pointer"
+              className="fixed bottom-6 right-6 bg-primary text-white p-4 rounded-full hover:bg-gray-700 transition text-4xl cursor-pointer"
             >
-              {isAddFormVisible ? "Close Form" : "Add New Application"}
+              +
             </button>
           </div>
         )}
 
-        {/* Wyświetlanie formularza, jeśli isAddFormVisible jest true */}
         {isAddFormVisible && (
           <AddJobApplication
             onAddJobApplication={addJobApplication}
-            closeForm={() => setIsAddFormVisible(false)} // Funkcja do zamykania formularza
+            closeForm={() => setIsAddFormVisible(false)}
           />
         )}
 
@@ -184,6 +169,14 @@ export default function Dashboard() {
                 />
               ))}
             </div>
+
+            {applications.length === 0 && !isLoading && (
+              <div className="text-center my-20">
+                <p className="text-lg text-gray-600">
+                  You haven’t added any job applications yet.
+                </p>
+              </div>
+            )}
 
             <Pagination
               currentPage={currentPage}
