@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { connectToDatabase } from "../../lib/mongoose";
-import JobApplication from "../../models/JobApplication";
+import { connectToDatabase } from "../../../lib/mongoose";
+import JobApplication from "../../../models/JobApplication";
 
 // This API route handles GET and POST requests for job applications
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
