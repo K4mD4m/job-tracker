@@ -11,6 +11,7 @@ interface MongooseCache {
   promise: Promise<Connection> | null;
 }
 
+
 const globalWithMongoose = global as typeof global & { mongooseCache?: MongooseCache };
 
 if (!globalWithMongoose.mongooseCache) {
@@ -28,19 +29,12 @@ export async function connectToDatabase() {
     cached.promise = mongoose.connect(MONGODB_URI, {
       dbName: "jobtracker",
       bufferCommands: false,
-      serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 10000,        
-    }).then((mongoose) => mongoose.connection)
-      .catch((err) => {
-        console.error("❌ MongoDB connection error:", err);
-        throw err;
-      });
+    }).then((mongoose) => mongoose.connection);
   }
 
   cached.conn = await cached.promise;
   return cached.conn;
 }
-
 
 
 
