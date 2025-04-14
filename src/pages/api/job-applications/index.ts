@@ -4,7 +4,12 @@ import JobApplication from "../../../models/JobApplication";
 
 // This API route handles GET and POST requests for job applications
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  await connectToDatabase(); 
+  try {
+    await connectToDatabase();
+  } catch (err) {
+    console.error("❌ Database connection failed in API:", err);
+    return res.status(500).json({ message: "Database connection failed" });
+  }
 
   if (req.method === "GET") {
     try {
@@ -27,3 +32,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(405).json({ message: `Method ${req.method} Not Allowed` });
   }
 }
+
