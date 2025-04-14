@@ -56,7 +56,7 @@ npm run dev
 
 ## 🌐 Live Version
 
-👉 **[View Live App]()**
+👉 **[View Live App](https://job-tracker-two-kappa.vercel.app/)**
 
 ---
 
