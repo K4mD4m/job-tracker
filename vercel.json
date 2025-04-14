@@ -1,7 +1,11 @@
 {
     "functions": {
-      "api/**/*.ts": {
+      "api/job-applications/index.ts": {
+        "maxDuration": 30
+      },
+      "api/job-applications/[id].ts": {
         "maxDuration": 30
       }
     }
   }
+  
