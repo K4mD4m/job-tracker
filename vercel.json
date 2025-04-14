@@ -1,9 +1,6 @@
 {
     "functions": {
-      "api/job-applications/index.ts": {
-        "maxDuration": 30
-      },
-      "api/job-applications/[id].ts": {
+      "api/job-applications/*.ts": {
         "maxDuration": 30
       }
     }
