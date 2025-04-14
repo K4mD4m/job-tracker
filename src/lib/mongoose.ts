@@ -36,14 +36,5 @@ export async function connectToDatabase() {
   return cached.conn;
 }
 
-console.log("Connecting to MongoDB...");
-
-cached.promise = mongoose.connect(MONGODB_URI, {
-  dbName: "jobtracker",
-  bufferCommands: false,
-}).then((mongoose) => {
-  console.log("MongoDB connected.");
-  return mongoose.connection;
-});
 
 
